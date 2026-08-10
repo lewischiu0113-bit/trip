@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-300 selection:bg-orange-500 selection:text-white;
+  }
+}
+
+/* CodeCat Practice Warm Glow Background Pattern */
+.bg-codecat-glow {
+  background-image: 
+    radial-gradient(circle at 90% 10%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 10% 40%, rgba(168, 85, 247, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+}
+
+.dark .bg-codecat-glow {
+  background-image: 
+    radial-gradient(circle at 90% 10%, rgba(249, 115, 22, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 10% 40%, rgba(168, 85, 247, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 50%);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 dark:bg-slate-700 rounded-full hover:bg-slate-400 dark:hover:bg-slate-600 transition-colors;
+}
+
+/* CodeCat Practice Clean Glass Cards */
+.glass-card {
+  @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/90 shadow-sm rounded-2xl transition-all duration-300 hover:shadow-md hover:border-orange-500/30;
+}
+
+.glass-pill {
+  @apply bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-full transition-all;
+}
+
+/* CodeCat Orange Brand Gradient Text */
+.gradient-text-orange {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600;
+}
+
+/* Slow spin animation for compass icon */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 12s linear infinite;
+}
+
+/* Hide scrollbar helpers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
