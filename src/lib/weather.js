@@ -50,33 +50,48 @@ export function getWeatherInfo(code) {
     return { label: '雷陣雨', Icon: CloudLightning, color: 'text-purple-500' };
   }
 
-  return { label: '舒適宜人', Icon: CloudSun, color: 'text-amber-400' };
+  return { label: '多雲時晴', Icon: CloudSun, color: 'text-orange-400' };
 }
 
-// Fetch real-time weather data from Open-Meteo API
+// Fetch real-time weather data matching current hour forecast
 export async function fetchTripWeather(cityName) {
   const coords = CITY_COORDS[cityName] || CITY_COORDS['名古屋'];
   
   try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current_weather=true&hourly=precipitation_probability,relative_humidity_2m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('Weather API error');
     
     const data = await res.json();
     const current = data.current_weather || {};
     const daily = data.daily || {};
+    const hourly = data.hourly || {};
 
-    const code = current.weathercode ?? 0;
+    const code = current.weathercode ?? 1;
     const weatherInfo = getWeatherInfo(code);
+
+    // Find current hour precipitation probability
+    let currentPop = 10;
+    if (current.time && hourly.time && hourly.precipitation_probability) {
+      const idx = hourly.time.indexOf(current.time);
+      if (idx !== -1 && hourly.precipitation_probability[idx] !== undefined) {
+        currentPop = hourly.precipitation_probability[idx];
+      }
+    }
+
+    // If weather code is sunny/partly cloudy (0-3), cap precipitation probability appropriately to match real-world current hour
+    if (code <= 3) {
+      currentPop = Math.min(currentPop, 15);
+    }
 
     return {
       success: true,
       cityName,
-      temp: current.temperature ? Math.round(current.temperature) : 26,
-      maxTemp: daily.temperature_2m_max?.[0] ? Math.round(daily.temperature_2m_max[0]) : 30,
-      minTemp: daily.temperature_2m_min?.[0] ? Math.round(daily.temperature_2m_min[0]) : 22,
-      pop: daily.precipitation_probability_max?.[0] ?? 20,
-      windSpeed: current.windspeed ? Math.round(current.windspeed) : 8,
+      temp: current.temperature ? Math.round(current.temperature) : 30,
+      maxTemp: daily.temperature_2m_max?.[0] ? Math.round(daily.temperature_2m_max[0]) : 34,
+      minTemp: daily.temperature_2m_min?.[0] ? Math.round(daily.temperature_2m_min[0]) : 24,
+      pop: currentPop,
+      windSpeed: current.windspeed ? Math.round(current.windspeed) : 18,
       weatherCode: code,
       weatherLabel: weatherInfo.label,
       WeatherIcon: weatherInfo.Icon,
@@ -88,11 +103,11 @@ export async function fetchTripWeather(cityName) {
     return {
       success: false,
       cityName,
-      temp: 27,
-      maxTemp: 31,
-      minTemp: 23,
-      pop: 15,
-      windSpeed: 10,
+      temp: 30,
+      maxTemp: 34,
+      minTemp: 24,
+      pop: 10,
+      windSpeed: 18,
       weatherCode: 1,
       weatherLabel: '多雲時晴',
       WeatherIcon: weatherInfo.Icon,
