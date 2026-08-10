@@ -9,11 +9,12 @@ import ExpenseView from './components/ExpenseView';
 import PackingView from './components/PackingView';
 import PlaceNotesView from './components/PlaceNotesView';
 import TripModal from './components/TripModal';
+import LoginView from './components/LoginView';
 
-import {
-  fetchTrips,
-  fetchItineraries,
-  fetchExpenses,
+import { 
+  fetchTrips, 
+  fetchItineraries, 
+  fetchExpenses, 
   fetchPacking,
   saveTrip,
   saveItinerary,
@@ -26,13 +27,17 @@ import {
 import { Loader2 } from 'lucide-react';
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState(() => {
+    return localStorage.getItem('trip_user') || null;
+  });
+
   const [trips, setTrips] = useState([]);
   const [activeTrip, setActiveTrip] = useState(null);
-
+  
   const [itineraries, setItineraries] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [packing, setPacking] = useState([]);
-
+  
   const [activeTab, setActiveTab] = useState('itinerary');
   const [darkMode, setDarkMode] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -52,6 +57,7 @@ export default function App() {
 
   // Load Trips on mount 100% from Supabase `tb_trips` ordered descending by date
   useEffect(() => {
+    if (!currentUser) return;
     async function loadTrips() {
       setLoading(true);
       const res = await fetchTrips();
@@ -63,11 +69,11 @@ export default function App() {
       setLoading(false);
     }
     loadTrips();
-  }, []);
+  }, [currentUser]);
 
   // Load Active Trip Data 100% from Supabase (`tb_itineraries`, `tb_expenses`, `tb_packing`)
   useEffect(() => {
-    if (!activeTrip) return;
+    if (!activeTrip || !currentUser) return;
 
     async function loadTripDetails() {
       const itinRes = await fetchItineraries(activeTrip.id);
@@ -81,7 +87,17 @@ export default function App() {
     }
 
     loadTripDetails();
-  }, [activeTrip]);
+  }, [activeTrip, currentUser]);
+
+  // Login / Logout Handlers
+  const handleLoginSuccess = (user) => {
+    setCurrentUser(user);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('trip_user');
+    setCurrentUser(null);
+  };
 
   // Handlers
   const handleSelectTrip = (trip) => {
@@ -113,7 +129,6 @@ export default function App() {
 
   const handleReorderItineraries = async (reorderedList) => {
     setItineraries(reorderedList);
-    // Update sort_order in Supabase
     for (let i = 0; i < reorderedList.length; i++) {
       const item = reorderedList[i];
       if (item.sort_order !== i + 1) {
@@ -143,13 +158,18 @@ export default function App() {
     setPacking(updated);
   };
 
+  // If user is not logged in, render Login View
+  if (!currentUser) {
+    return <LoginView onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <>
-      {/* CodeCat Style Animated Loading Splash */}
+      {/* Animated Loading Splash */}
       <WelcomeSplash />
 
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-300 font-sans bg-codecat-glow">
-
+        
         {/* Top Header */}
         <Header
           trips={trips}
@@ -161,11 +181,13 @@ export default function App() {
           }}
           darkMode={darkMode}
           onToggleDarkMode={() => setDarkMode(!darkMode)}
+          currentUser={currentUser}
+          onLogout={handleLogout}
         />
 
         {/* Main Container */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
+          
           {loading ? (
             <div className="glass-card p-12 text-center text-slate-400 flex flex-col items-center justify-center space-y-3">
               <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
