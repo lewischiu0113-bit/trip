@@ -1,6 +1,17 @@
 -- Supabase Table Initialization Script for Travel Itinerary App
 -- All tables are prefixed with tb_ to avoid conflicts with existing tables.
 
+CREATE TABLE IF NOT EXISTS public.tb_users (
+    id TEXT PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+INSERT INTO public.tb_users (id, username, password)
+VALUES ('user-test-001', 'test', '000000')
+ON CONFLICT (username) DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS public.tb_trips (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
@@ -48,11 +59,13 @@ CREATE TABLE IF NOT EXISTS public.tb_packing (
 );
 
 -- Enable RLS and public policies
+ALTER TABLE public.tb_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tb_trips ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tb_itineraries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tb_expenses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tb_packing ENABLE ROW LEVEL SECURITY;
 
+CREATE POLICY "Allow public read/all tb_users" ON public.tb_users FOR ALL USING (true);
 CREATE POLICY "Allow public read tb_trips" ON public.tb_trips FOR SELECT USING (true);
 CREATE POLICY "Allow public insert/update/delete tb_trips" ON public.tb_trips FOR ALL USING (true);
 

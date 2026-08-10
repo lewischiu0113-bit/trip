@@ -13,6 +13,27 @@ export const TB_TRIPS = 'tb_trips';
 export const TB_ITINERARIES = 'tb_itineraries';
 export const TB_EXPENSES = 'tb_expenses';
 export const TB_PACKING = 'tb_packing';
+export const TB_USERS = 'tb_users';
+
+// User Authentication verification from Supabase `tb_users`
+export async function verifyUserCredentials(username, password) {
+  try {
+    const { data, error } = await supabase
+      .from(TB_USERS)
+      .select('*')
+      .eq('username', username.trim())
+      .eq('password', password)
+      .single();
+
+    if (!error && data) {
+      return { success: true, user: data };
+    }
+  } catch (err) {
+    console.warn('Database user check error:', err);
+  }
+
+  return { success: false, error: '帳號或密碼錯誤！' };
+}
 
 // 1. Fetch Trips directly from Supabase `tb_trips` ordered descending by start_date (newest first)
 export async function fetchTrips() {
