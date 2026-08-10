@@ -105,8 +105,8 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-200 mt-0.5">
                     <span className="text-lg font-black text-white font-outfit">{weather.temp}°C</span>
                     <span className="text-[10px] text-slate-300">({weather.minTemp}° ~ {weather.maxTemp}°C)</span>
-                    <span className="flex items-center gap-0.5 text-[10px] text-sky-300">
-                      <Umbrella className="w-3 h-3" /> {weather.pop}%
+                    <span className="flex items-center gap-0.5 text-[10px] text-sky-300 font-bold" title="降雨機率">
+                      <Umbrella className="w-3 h-3 text-sky-400" /> 降雨機率 {weather.pop}%
                     </span>
                   </div>
                 </div>
