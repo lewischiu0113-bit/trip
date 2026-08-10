@@ -1,10 +1,25 @@
-import React from 'react';
-import { Calendar, MapPin, DollarSign, PackageCheck, Sparkles, Edit, Clock } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, MapPin, DollarSign, PackageCheck, Sparkles, Edit, Clock, Umbrella, Wind } from 'lucide-react';
 import { getCalculatedStatus, renderStatusBadge } from './Header';
+import { fetchTripWeather } from '../lib/weather';
 
 const DEFAULT_BANNER_IMAGE = 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1600&q=80';
 
 export default function TripBanner({ activeTrip, itineraries, expenses, packing, onOpenEditTripModal }) {
+  const [weather, setWeather] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
+
+  useEffect(() => {
+    if (!activeTrip) return;
+    async function loadWeather() {
+      setWeatherLoading(true);
+      const data = await fetchTripWeather(activeTrip.name);
+      setWeather(data);
+      setWeatherLoading(false);
+    }
+    loadWeather();
+  }, [activeTrip?.name]);
+
   if (!activeTrip) return null;
 
   const totalStops = itineraries.length;
@@ -18,6 +33,8 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
 
   const status = getCalculatedStatus(activeTrip.start_date, activeTrip.end_date);
   const bannerImage = activeTrip.cover_image || DEFAULT_BANNER_IMAGE;
+
+  const WeatherIcon = weather?.WeatherIcon;
 
   return (
     <div className="relative w-full rounded-2xl overflow-hidden shadow-sm mb-6 glass-card border border-slate-200/80 dark:border-slate-800">
@@ -37,7 +54,7 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
         
         {/* Top Header Bar inside Banner (RWD Protected) */}
-        <div className="absolute top-3 left-3 right-3 sm:top-6 sm:left-6 sm:right-6 flex items-center justify-between gap-2 flex-wrap">
+        <div className="absolute top-3 left-3 right-3 sm:top-6 sm:left-6 sm:right-6 flex items-center justify-between gap-2 flex-wrap z-10">
           <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap max-w-[70%]">
             <span className="px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-100 backdrop-blur-md shadow-sm flex items-center gap-1 border border-slate-200/50 truncate">
               <Sparkles className="w-3 h-3 text-orange-500 shrink-0" />
@@ -54,8 +71,8 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
           </button>
         </div>
 
-        {/* Bottom Banner Info */}
-        <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 text-white">
+        {/* Bottom Banner Info & Real-Time Weather Widget */}
+        <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 text-white z-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
             <div>
               <div className="flex items-center gap-2 sm:gap-3 mb-1.5 flex-wrap">
@@ -71,6 +88,30 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
                 {activeTrip.description || '精心規劃的特色景點、美食饗宴、行前行李清單與實時費用帳簿。'}
               </p>
             </div>
+
+            {/* Weather Badge Widget */}
+            {weather && (
+              <div className="px-3.5 py-2 rounded-2xl bg-black/40 hover:bg-black/60 backdrop-blur-md border border-white/20 text-white shadow-lg transition-all flex items-center gap-3 shrink-0">
+                {WeatherIcon && (
+                  <div className="p-2 rounded-xl bg-white/10 shrink-0">
+                    <WeatherIcon className={`w-6 h-6 ${weather.color}`} />
+                  </div>
+                )}
+                <div>
+                  <div className="flex items-center gap-1.5 font-bold text-xs sm:text-sm">
+                    <span className="text-orange-400 font-extrabold">{weather.cityName}實時天氣</span>
+                    <span className="bg-orange-500/80 px-1.5 py-0.2 rounded text-[10px]">{weather.weatherLabel}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-200 mt-0.5">
+                    <span className="text-lg font-black text-white font-outfit">{weather.temp}°C</span>
+                    <span className="text-[10px] text-slate-300">({weather.minTemp}° ~ {weather.maxTemp}°C)</span>
+                    <span className="flex items-center gap-0.5 text-[10px] text-sky-300">
+                      <Umbrella className="w-3 h-3" /> {weather.pop}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
