@@ -4,25 +4,51 @@ import { motion } from 'framer-motion';
 export default function WelcomeSplash({ onComplete }) {
   const [progress, setProgress] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
+
+  const [isMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768 || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
+
   const [visible, setVisible] = useState(() => {
+    if (typeof window === 'undefined') return true;
     const hasSeen = sessionStorage.getItem('hasSeenTripIntro');
+    // On mobile, if already seen or mobile mode requested, bypass long delay
+    if (window.innerWidth < 768 && hasSeen === 'true') {
+      return false;
+    }
     return hasSeen !== 'true';
   });
 
+  const handleSkip = () => {
+    sessionStorage.setItem('hasSeenTripIntro', 'true');
+    setVisible(false);
+    if (onComplete) onComplete();
+  };
+
   useEffect(() => {
     if (!visible) return;
+
+    // On mobile, fast forward progress immediately to prevent white screen freeze
+    if (isMobile) {
+      setProgress(100);
+      const timer = setTimeout(() => {
+        setIsFinished(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    }
 
     let currentProgress = 0;
     const interval = setInterval(() => {
       let increment = 0;
       if (currentProgress < 30) {
-        increment = Math.random() * 8 + 4;
+        increment = Math.random() * 12 + 8;
       } else if (currentProgress < 75) {
-        increment = Math.random() * 5 + 2;
+        increment = Math.random() * 10 + 5;
       } else if (currentProgress < 90) {
-        increment = Math.random() * 3 + 1;
+        increment = Math.random() * 8 + 4;
       } else {
-        increment = Math.random() * 6 + 3;
+        increment = Math.random() * 12 + 6;
       }
 
       currentProgress = Math.min(currentProgress + increment, 100);
@@ -32,25 +58,27 @@ export default function WelcomeSplash({ onComplete }) {
         clearInterval(interval);
         setTimeout(() => {
           setIsFinished(true);
-        }, 400);
+        }, 200);
       }
-    }, 40);
+    }, 30);
 
     return () => clearInterval(interval);
-  }, [visible]);
+  }, [visible, isMobile]);
 
   useEffect(() => {
     if (isFinished) {
       sessionStorage.setItem('hasSeenTripIntro', 'true');
+      const hideDelay = isMobile ? 150 : 500;
       const timeout = setTimeout(() => {
         setVisible(false);
         if (onComplete) onComplete();
-      }, 1200);
+      }, hideDelay);
       return () => clearTimeout(timeout);
     }
-  }, [isFinished, onComplete]);
+  }, [isFinished, onComplete, isMobile]);
 
   const scrambleText = (text, currentProgress) => {
+    if (isMobile) return text; // Skip CPU-heavy text scrambling on mobile
     const chars = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
     const ratio = currentProgress / 100;
     const resolvedLength = Math.floor(text.length * ratio);
@@ -68,37 +96,51 @@ export default function WelcomeSplash({ onComplete }) {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-transparent text-slate-800 select-none overflow-hidden font-sans">
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white dark:bg-slate-950 text-slate-800 select-none overflow-hidden font-sans">
       
-      {/* CodeCat Staggered Vertical Columns Curtain (Light Theme) */}
-      <div className="absolute inset-0 flex pointer-events-none z-0">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="h-full bg-white flex-1 border-r border-slate-100 last:border-0 dark:bg-slate-900 dark:border-slate-800"
-            initial={{ scaleY: 1 }}
-            animate={isFinished ? { scaleY: 0 } : { scaleY: 1 }}
-            transition={{
-              duration: 0.8,
-              delay: i * 0.08,
-              ease: [0.76, 0, 0.24, 1],
-            }}
-            style={{ originY: i % 2 === 0 ? 0 : 1 }}
-          />
-        ))}
-      </div>
+      {/* Top-Right Skip Button */}
+      <button
+        onClick={handleSkip}
+        className="absolute top-4 right-4 z-[10000] px-3.5 py-1.5 rounded-full bg-slate-200/80 dark:bg-slate-800/80 hover:bg-orange-500 hover:text-white text-slate-600 dark:text-slate-300 text-xs font-bold transition-all shadow-sm backdrop-blur-md cursor-pointer"
+      >
+        跳過 Skip ✕
+      </button>
 
-      {/* CodeCat Warm Glow Circles */}
-      <motion.div
-        className="absolute top-1/4 left-1/4 w-[35rem] h-[35rem] bg-orange-400/20 rounded-full blur-[120px] pointer-events-none"
-        animate={isFinished ? { opacity: 0, scale: 0.8 } : { opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-      />
-      <motion.div
-        className="absolute bottom-1/4 right-1/4 w-[35rem] h-[35rem] bg-purple-400/20 rounded-full blur-[100px] pointer-events-none"
-        animate={isFinished ? { opacity: 0, scale: 0.8 } : { opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6 }}
-      />
+      {/* CodeCat Staggered Vertical Columns Curtain (Light Theme) */}
+      {!isMobile && (
+        <div className="absolute inset-0 flex pointer-events-none z-0">
+          {[...Array(8)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="h-full bg-white flex-1 border-r border-slate-100 last:border-0 dark:bg-slate-900 dark:border-slate-800"
+              initial={{ scaleY: 1 }}
+              animate={isFinished ? { scaleY: 0 } : { scaleY: 1 }}
+              transition={{
+                duration: 0.5,
+                delay: i * 0.05,
+                ease: [0.76, 0, 0.24, 1],
+              }}
+              style={{ originY: i % 2 === 0 ? 0 : 1 }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* CodeCat Warm Glow Circles (Desktop only to save GPU on mobile) */}
+      {!isMobile && (
+        <>
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-[35rem] h-[35rem] bg-orange-400/20 rounded-full blur-[120px] pointer-events-none hidden md:block"
+            animate={isFinished ? { opacity: 0, scale: 0.8 } : { opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 right-1/4 w-[35rem] h-[35rem] bg-purple-400/20 rounded-full blur-[100px] pointer-events-none hidden md:block"
+            animate={isFinished ? { opacity: 0, scale: 0.8 } : { opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+          />
+        </>
+      )}
 
       {/* Grid Pattern */}
       <motion.div

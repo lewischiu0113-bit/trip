@@ -176,8 +176,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
       </div>
 
       {/* Controls Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 glass-card p-4">
-        
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 glass-card p-3.5 sm:p-4">
         {/* Search */}
         <input
           type="text"
@@ -188,41 +187,43 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
         />
 
         {/* Paid Status Filter Pills */}
-        <div className="flex items-center gap-2">
-          {['All', 'Paid', 'Unpaid'].map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilterPaid(status)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                filterPaid === status
-                  ? 'bg-orange-500 text-white shadow-sm'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-              }`}
-            >
-              {status === 'All' ? '全部' : status === 'Paid' ? '已繳清' : '未繳清'}
-            </button>
-          ))}
+        <div className="flex items-center justify-between sm:justify-end gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            {['All', 'Paid', 'Unpaid'].map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilterPaid(status)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
+                  filterPaid === status
+                    ? 'bg-orange-500 text-white shadow-sm'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                }`}
+              >
+                {status === 'All' ? '全部' : status === 'Paid' ? '已繳清' : '未繳清'}
+              </button>
+            ))}
+          </div>
           <button
             onClick={handleOpenAdd}
-            className="ml-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5"
+            className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" /> 記一筆
           </button>
         </div>
       </div>
 
-      {/* Expenses Table */}
-      <div className="glass-card overflow-hidden">
+      {/* Desktop Table View (hidden on mobile < md) */}
+      <div className="hidden md:block glass-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="w-full text-left text-sm min-w-[700px]">
             <thead className="bg-slate-100 dark:bg-slate-800/80 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               <tr>
-                <th className="p-4">品項名稱</th>
-                <th className="p-4">金額 (TWD)</th>
-                <th className="p-4">支付狀態</th>
-                <th className="p-4">付款人/來源分類</th>
-                <th className="p-4">來源標籤</th>
-                <th className="p-4 text-right">操作</th>
+                <th className="p-4 whitespace-nowrap">品項名稱</th>
+                <th className="p-4 whitespace-nowrap">金額 (TWD)</th>
+                <th className="p-4 whitespace-nowrap">支付狀態</th>
+                <th className="p-4 whitespace-nowrap">付款人/來源分類</th>
+                <th className="p-4 whitespace-nowrap">來源標籤</th>
+                <th className="p-4 text-right whitespace-nowrap">操作</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
@@ -232,15 +233,15 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                     {exp.source === 'itinerary' && (
                       <MapPin className="w-3.5 h-3.5 text-orange-500 shrink-0" />
                     )}
-                    {exp.item_name}
+                    <span>{exp.item_name}</span>
                   </td>
-                  <td className="p-4 font-extrabold text-orange-600 dark:text-orange-400 font-outfit">
+                  <td className="p-4 font-extrabold text-orange-600 dark:text-orange-400 font-outfit whitespace-nowrap">
                     ${(parseFloat(exp.amount) || 0).toLocaleString()}
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 whitespace-nowrap">
                     <button
                       onClick={() => handleTogglePaid(exp)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
                         exp.is_paid
                           ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
                           : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
@@ -250,24 +251,24 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                       {exp.is_paid ? '已繳清' : '未付款'}
                     </button>
                   </td>
-                  <td className="p-4 text-xs text-slate-500 dark:text-slate-400">
-                    <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 mr-1.5 font-medium">
+                  <td className="p-4 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                    <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 mr-1.5 font-medium whitespace-nowrap">
                       {exp.category || '雜項'}
                     </span>
-                    {exp.payer || '公費'}
+                    <span className="whitespace-nowrap">{exp.payer || '公費'}</span>
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 whitespace-nowrap">
                     {exp.source === 'itinerary' ? (
-                      <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 text-xs font-bold">
+                      <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 text-xs font-bold whitespace-nowrap inline-block">
                         行程卡片預算
                       </span>
                     ) : (
-                      <span className="px-2 py-1 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 text-xs font-semibold">
+                      <span className="px-2 py-1 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 text-xs font-semibold whitespace-nowrap inline-block">
                         獨立記帳
                       </span>
                     )}
                   </td>
-                  <td className="p-4 text-right">
+                  <td className="p-4 text-right whitespace-nowrap">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => handleOpenEdit(exp)}
@@ -290,6 +291,89 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile Card List View (visible on mobile < md) */}
+      <div className="block md:hidden space-y-3">
+        {filteredExpenses.length === 0 ? (
+          <div className="glass-card p-8 text-center text-slate-400 text-sm font-medium">
+            查無記帳或行程消費項目
+          </div>
+        ) : (
+          filteredExpenses.map((exp) => (
+            <div
+              key={exp.id}
+              className="glass-card p-4 space-y-3 border border-slate-200/90 dark:border-slate-800"
+            >
+              {/* Card Header: Item Name + Amount */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="font-bold text-slate-900 dark:text-slate-100 text-base flex items-center gap-1.5 min-w-0">
+                  {exp.source === 'itinerary' && (
+                    <MapPin className="w-4 h-4 text-orange-500 shrink-0" />
+                  )}
+                  <span className="truncate">{exp.item_name}</span>
+                </div>
+                <div className="text-lg font-black text-orange-600 dark:text-orange-400 font-outfit shrink-0 whitespace-nowrap">
+                  ${(parseFloat(exp.amount) || 0).toLocaleString()}
+                </div>
+              </div>
+
+              {/* Badges & Meta */}
+              <div className="flex items-center gap-1.5 flex-wrap text-xs">
+                {/* Category */}
+                <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap break-keep">
+                  {exp.category || '雜項'}
+                </span>
+                
+                {/* Payer */}
+                <span className="text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap break-keep">
+                  {exp.payer || '公費'}
+                </span>
+
+                {/* Tag source */}
+                {exp.source === 'itinerary' ? (
+                  <span className="px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 font-bold whitespace-nowrap break-keep ml-auto">
+                    行程卡片預算
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 font-semibold whitespace-nowrap break-keep ml-auto">
+                    獨立記帳
+                  </span>
+                )}
+              </div>
+
+              {/* Action & Status Row */}
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => handleTogglePaid(exp)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
+                    exp.is_paid
+                      ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                      : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
+                  }`}
+                >
+                  {exp.is_paid ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
+                  {exp.is_paid ? '已繳清' : '未付款'}
+                </button>
+
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleOpenEdit(exp)}
+                    className="px-2.5 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center gap-1 text-xs font-semibold transition-colors"
+                  >
+                    <Edit className="w-3.5 h-3.5 text-orange-500" /> 編輯
+                  </button>
+                  <button
+                    onClick={() => handleDeleteItem(exp)}
+                    className="px-2.5 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/60 text-slate-400 hover:text-red-500 flex items-center gap-1 text-xs font-semibold transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" /> 刪除
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Add / Edit Expense Modal */}

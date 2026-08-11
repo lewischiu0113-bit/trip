@@ -44,6 +44,14 @@
   @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/90 shadow-sm rounded-2xl transition-all duration-300 hover:shadow-md hover:border-orange-500/30;
 }
 
+@media (max-width: 768px) {
+  .glass-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    @apply bg-white dark:bg-slate-900;
+  }
+}
+
 .glass-pill {
   @apply bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-full transition-all;
 }
