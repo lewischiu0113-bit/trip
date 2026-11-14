@@ -3,6 +3,30 @@ import { Maximize2, X, ExternalLink } from 'lucide-react';
 
 const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80';
 
+function renderDescriptionWithLinks(text) {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (/^https?:\/\//.test(part)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="text-orange-600 dark:text-orange-400 hover:text-orange-500 underline font-medium break-all inline-flex items-center gap-1"
+        >
+          {part}
+          <ExternalLink className="w-3 h-3 shrink-0 inline" />
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 export default function PlaceNotesView({ itineraries }) {
   const [selectedPlace, setSelectedPlace] = useState(null);
 
@@ -56,7 +80,7 @@ export default function PlaceNotesView({ itineraries }) {
                   </h3>
                   {place.description && (
                     <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
-                      {place.description}
+                      {renderDescriptionWithLinks(place.description)}
                     </p>
                   )}
                 </div>
@@ -132,7 +156,7 @@ export default function PlaceNotesView({ itineraries }) {
 
               {selectedPlace.description && (
                 <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
-                  {selectedPlace.description}
+                  {renderDescriptionWithLinks(selectedPlace.description)}
                 </div>
               )}
 

@@ -17,6 +17,31 @@ import {
   ChevronDown
 } from 'lucide-react';
 
+// Helper to render text with clickable URLs
+function renderDescriptionWithLinks(text) {
+  if (!text) return null;
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (/^https?:\/\//.test(part)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="text-orange-600 dark:text-orange-400 hover:text-orange-500 underline font-medium break-all inline-flex items-center gap-1"
+        >
+          {part}
+          <ExternalLink className="w-3 h-3 shrink-0 inline" />
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 // Helper to sort day pills in chronological month/day order (e.g. 7/28 -> 7/29 -> 7/30 -> 8/1)
 function sortDayPills(daysList) {
   return [...daysList].sort((a, b) => {
@@ -480,7 +505,7 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
 
                       {item.description && (
                         <p className="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
-                          {item.description}
+                          {renderDescriptionWithLinks(item.description)}
                         </p>
                       )}
                     </div>
@@ -624,7 +649,7 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
                     </h4>
                     {item.description && (
                       <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
-                        {item.description}
+                        {renderDescriptionWithLinks(item.description)}
                       </p>
                     )}
                   </div>
