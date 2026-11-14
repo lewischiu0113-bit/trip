@@ -9,15 +9,19 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          500: '#0284c7',
-          600: '#0369a1',
-          700: '#075985',
-        }
+          50: '#fff1f2',
+          100: '#ffe4e6',
+          500: '#FF5A5F',
+          600: '#E8484D',
+          700: '#be123c',
+        },
+        sunny: '#FFB800',
+        soda: '#00B4D8',
+        cream: '#FFFDF7',
       },
       fontFamily: {
-        sans: ['"Noto Sans TC"', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        outfit: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
       }
     },
   },

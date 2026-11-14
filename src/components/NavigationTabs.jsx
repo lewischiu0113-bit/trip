@@ -30,8 +30,8 @@ export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount,
   ];
 
   return (
-    <div className="flex items-center justify-start sm:justify-center border-b border-slate-200 dark:border-slate-800 mb-6 overflow-x-auto no-scrollbar">
-      <nav className="flex gap-1.5 sm:gap-3 p-1 min-w-max">
+    <div className="flex items-center justify-start sm:justify-center mb-6 overflow-x-auto no-scrollbar py-1">
+      <nav className="inline-flex gap-1.5 sm:gap-2 p-1.5 rounded-full bg-white dark:bg-slate-900 border border-[#FDE68A] dark:border-slate-800 shadow-sm min-w-max">
         {tabs.map((t) => {
           const Icon = t.icon;
           const isActive = activeTab === t.id;
@@ -40,19 +40,19 @@ export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount,
             <button
               key={t.id}
               onClick={() => onChangeTab(t.id)}
-              className={`flex items-center gap-1.5 sm:gap-2 px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 relative whitespace-nowrap ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all duration-200 whitespace-nowrap ${
                 isActive
-                  ? 'bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80 border border-transparent'
+                  ? 'bg-[#FF5A5F] text-white sticker-btn-shadow'
+                  : 'text-[#64748B] dark:text-slate-400 hover:text-[#1E293B] dark:hover:text-white hover:bg-amber-50/80 dark:hover:bg-slate-800/80'
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isActive ? 'text-orange-500' : 'text-slate-400'}`} />
+              <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isActive ? 'text-white' : 'text-[#FFB800]'}`} />
               <span>{t.label}</span>
               {t.count !== undefined && (
-                <span className={`px-1.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold ${
+                <span className={`px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold tabular-nums ${
                   isActive 
-                    ? 'bg-orange-200/60 dark:bg-orange-900/60 text-orange-700 dark:text-orange-300' 
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                    ? 'bg-white/25 text-white' 
+                    : 'bg-amber-50 dark:bg-slate-800 text-[#64748B] dark:text-slate-300'
                 }`}>
                   {t.count}
                 </span>

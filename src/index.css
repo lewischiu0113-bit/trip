@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@500;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,23 +6,28 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-300 selection:bg-orange-500 selection:text-white;
+    @apply bg-[#FFFDF7] text-[#1E293B] dark:bg-slate-950 dark:text-slate-100 font-sans antialiased min-h-screen transition-colors duration-300 selection:bg-[#FF5A5F] selection:text-white;
   }
 }
 
-/* CodeCat Practice Warm Glow Background Pattern */
+/* Pop & Sunny Travel Zine Background Pattern */
 .bg-codecat-glow {
+  background-color: #FFFDF7;
   background-image: 
-    radial-gradient(circle at 90% 10%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 10% 40%, rgba(168, 85, 247, 0.06) 0%, transparent 40%),
-    radial-gradient(circle at 50% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at 90% 8%, rgba(255, 184, 0, 0.10) 0%, transparent 38%),
+    radial-gradient(circle at 8% 35%, rgba(255, 90, 95, 0.07) 0%, transparent 36%),
+    radial-gradient(circle at 55% 85%, rgba(0, 180, 216, 0.06) 0%, transparent 45%),
+    radial-gradient(#FDE68A 0.85px, transparent 0.85px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 22px 22px;
 }
 
 .dark .bg-codecat-glow {
+  background-color: #020617;
   background-image: 
-    radial-gradient(circle at 90% 10%, rgba(249, 115, 22, 0.12) 0%, transparent 45%),
-    radial-gradient(circle at 10% 40%, rgba(168, 85, 247, 0.1) 0%, transparent 45%),
-    radial-gradient(circle at 50% 80%, rgba(14, 165, 233, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 90% 10%, rgba(255, 90, 95, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 10% 40%, rgba(255, 184, 0, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(0, 180, 216, 0.08) 0%, transparent 50%);
+  background-size: 100% 100%;
 }
 
 /* Custom Scrollbar */
@@ -36,29 +41,36 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 dark:bg-slate-700 rounded-full hover:bg-slate-400 dark:hover:bg-slate-600 transition-colors;
+  @apply bg-amber-200 dark:bg-slate-700 rounded-full hover:bg-amber-300 dark:hover:bg-slate-600 transition-colors;
 }
 
-/* CodeCat Practice Clean Glass Cards */
+/* Travel Zine Surface Cards */
 .glass-card {
-  @apply bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/90 shadow-sm rounded-2xl transition-all duration-300 hover:shadow-md hover:border-orange-500/30;
+  @apply bg-white dark:bg-slate-900/95 border border-[#FDE68A] dark:border-slate-800/90 rounded-3xl transition-all duration-300;
+  box-shadow: 0 8px 24px -4px rgba(30, 41, 59, 0.06), 0 0 0 1px rgba(255, 184, 0, 0.15);
 }
 
-@media (max-width: 768px) {
-  .glass-card {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    @apply bg-white dark:bg-slate-900;
-  }
+.dark .glass-card {
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.35);
 }
 
 .glass-pill {
-  @apply bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-full transition-all;
+  @apply bg-white/95 dark:bg-slate-800/90 border border-amber-200 dark:border-slate-700 rounded-full transition-all;
 }
 
-/* CodeCat Orange Brand Gradient Text */
+/* Sticker Shadow for Primary CTA */
+.sticker-btn-shadow {
+  box-shadow: 0 6px 16px -2px rgba(255, 90, 95, 0.25);
+}
+
+/* Tabular Numbers */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Brand Gradient Text */
 .gradient-text-orange {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-[#FF5A5F] via-[#FFB800] to-[#FF5A5F];
 }
 
 /* Slow spin animation for compass icon */
@@ -68,7 +80,7 @@
 }
 
 .animate-spin-slow {
-  animation: spinSlow 12s linear infinite;
+  animation: spinSlow 14s linear infinite;
 }
 
 /* Hide scrollbar helpers */

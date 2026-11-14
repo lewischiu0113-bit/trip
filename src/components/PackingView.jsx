@@ -41,28 +41,30 @@ export default function PackingView({ packing, onSavePackingItem }) {
     <div className="space-y-6">
       
       {/* Top Header Card */}
-      <div className="glass-card p-6 bg-gradient-to-tr from-orange-500/10 via-amber-500/10 to-purple-500/10 border-orange-200 dark:border-orange-800">
+      <div className="glass-card p-6 bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-800">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <PackageCheck className="w-6 h-6 text-orange-500" />
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-full bg-rose-50 dark:bg-rose-950 flex items-center justify-center">
+                <PackageCheck className="w-5 h-5 text-[#FF5A5F]" />
+              </div>
+              <h2 className="text-xl font-extrabold text-[#1E293B] dark:text-slate-100">
                 行李與行前準備清單
               </h2>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs text-[#64748B] dark:text-slate-400 mt-1.5">
               隨時點擊勾選打包狀態，自動即時同步雲端進度
             </p>
           </div>
 
-          <div className="w-full md:w-64 space-y-1">
-            <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-200">
+          <div className="w-full md:w-64 space-y-1.5">
+            <div className="flex justify-between text-xs font-bold text-[#1E293B] dark:text-slate-200">
               <span>準備完成度</span>
-              <span className="text-orange-500 font-extrabold">{progressPercent}% ({packedCount}/{total})</span>
+              <span className="text-[#FF5A5F] font-extrabold tabular-nums">{progressPercent}% ({packedCount}/{total})</span>
             </div>
-            <div className="w-full bg-slate-200 dark:bg-slate-700 h-3 rounded-full overflow-hidden p-0.5">
+            <div className="w-full bg-amber-100/80 dark:bg-slate-700 h-3.5 rounded-full overflow-hidden p-0.5">
               <div
-                className="bg-gradient-to-r from-orange-500 to-amber-500 h-full rounded-full transition-all duration-500"
+                className="bg-gradient-to-r from-[#FF5A5F] via-[#FFB800] to-[#10B981] h-full rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -77,12 +79,12 @@ export default function PackingView({ packing, onSavePackingItem }) {
           placeholder="新增準備品項 (如: 萬國插頭, 護照, 藥品...)"
           value={newItemText}
           onChange={(e) => setNewItemText(e.target.value)}
-          className="flex-1 px-4 py-2 text-sm rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="flex-1 px-4 py-2 text-sm rounded-full bg-[#FFFDF7] dark:bg-slate-800 border border-amber-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-[#FF5A5F]"
         />
         <select
           value={newItemCategory}
           onChange={(e) => setNewItemCategory(e.target.value)}
-          className="px-3 py-2 text-sm rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+          className="px-4 py-2 text-sm rounded-full bg-[#FFFDF7] dark:bg-slate-800 border border-amber-200 dark:border-slate-700"
         >
           <option value="證件">證件</option>
           <option value="財務">財務</option>
@@ -94,7 +96,7 @@ export default function PackingView({ packing, onSavePackingItem }) {
         </select>
         <button
           type="submit"
-          className="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-orange-500/20"
+          className="px-5 py-2 rounded-full bg-[#FF5A5F] hover:bg-[#E8484D] text-white font-bold text-xs flex items-center justify-center gap-1.5 sticker-btn-shadow transition-all active:scale-95"
         >
           <Plus className="w-4 h-4" /> 新增品項
         </button>
@@ -108,12 +110,12 @@ export default function PackingView({ packing, onSavePackingItem }) {
 
           return (
             <div key={cat} className="glass-card p-5 space-y-3">
-              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+              <div className="flex items-center justify-between border-b border-amber-100 dark:border-slate-800 pb-2.5">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-orange-500" />
-                  <h3 className="font-bold text-slate-800 dark:text-slate-200 text-sm">{cat}</h3>
+                  <ShieldCheck className="w-4 h-4 text-[#FFB800]" />
+                  <h3 className="font-extrabold text-[#1E293B] dark:text-slate-200 text-sm">{cat}</h3>
                 </div>
-                <span className="text-xs font-semibold text-slate-400">
+                <span className="text-xs font-bold text-[#64748B] tabular-nums">
                   {catPacked} / {items.length} 妥當
                 </span>
               </div>
@@ -124,23 +126,23 @@ export default function PackingView({ packing, onSavePackingItem }) {
                     key={item.id}
                     type="button"
                     onClick={() => handleTogglePack(item)}
-                    className={`w-full p-2.5 rounded-xl flex items-center justify-between text-sm transition-all text-left ${
+                    className={`w-full p-2.5 rounded-2xl flex items-center justify-between text-sm transition-all text-left ${
                       item.is_packed
-                        ? 'bg-orange-50/60 dark:bg-orange-950/40 text-slate-400 dark:text-slate-500 line-through'
-                        : 'bg-slate-50 dark:bg-slate-800/60 text-slate-800 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        ? 'bg-emerald-50/70 dark:bg-emerald-950/30 text-[#64748B] dark:text-slate-500'
+                        : 'bg-[#FFFDF7] dark:bg-slate-800/60 text-[#1E293B] dark:text-slate-100 hover:bg-amber-50/80 dark:hover:bg-slate-800 border border-amber-100/80 dark:border-slate-800'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       {item.is_packed ? (
-                        <CheckSquare className="w-5 h-5 text-orange-500 shrink-0" />
+                        <CheckSquare className="w-5 h-5 text-emerald-500 shrink-0" />
                       ) : (
-                        <Square className="w-5 h-5 text-slate-300 dark:text-slate-600 shrink-0" />
+                        <Square className="w-5 h-5 text-amber-300 dark:text-slate-600 shrink-0" />
                       )}
-                      <span className="font-medium">{item.item_name}</span>
+                      <span className={`font-medium ${item.is_packed ? 'line-through' : ''}`}>{item.item_name}</span>
                     </div>
                     {item.is_packed && (
-                      <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 no-underline">
-                        OK
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-[10px] font-extrabold text-emerald-700 dark:text-emerald-300 shrink-0">
+                        ✓ OK
                       </span>
                     )}
                   </button>

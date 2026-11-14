@@ -128,13 +128,10 @@ export default function App() {
   };
 
   const handleReorderItineraries = async (reorderedList) => {
+    const prevOrderMap = new Map(itineraries.map(item => [item.id, item.sort_order]));
     setItineraries(reorderedList);
-    for (let i = 0; i < reorderedList.length; i++) {
-      const item = reorderedList[i];
-      if (item.sort_order !== i + 1) {
-        await saveItinerary({ ...item, sort_order: i + 1 });
-      }
-    }
+    const changedItems = reorderedList.filter(item => prevOrderMap.get(item.id) !== item.sort_order);
+    await Promise.all(changedItems.map(item => saveItinerary(item)));
   };
 
   const handleSaveExpense = async (expense) => {
@@ -168,7 +165,7 @@ export default function App() {
       {/* Animated Loading Splash */}
       <WelcomeSplash />
 
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-300 font-sans bg-codecat-glow">
+      <div className="min-h-screen bg-[#FFFDF7] dark:bg-slate-950 text-[#1E293B] dark:text-slate-100 flex flex-col transition-colors duration-300 font-sans bg-codecat-glow">
         
         {/* Top Header */}
         <Header
@@ -266,8 +263,8 @@ export default function App() {
         </main>
 
         {/* Footer */}
-        <footer className="w-full border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-400 bg-white/60 dark:bg-slate-950/60 backdrop-blur-md">
-          <p>© 2026 旅遊筆記</p>
+        <footer className="w-full border-t border-amber-200/70 dark:border-slate-800 py-6 text-center text-xs text-[#64748B] bg-[#FFFDF7]/80 dark:bg-slate-950/60 backdrop-blur-md">
+          <p>© 2026 旅遊筆記 · Pop & Sunny Travel Zine</p>
         </footer>
 
         {/* Trip Modal */}

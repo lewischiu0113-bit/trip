@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { DollarSign, Plus, CheckCircle2, AlertCircle, X, MapPin, Edit, Trash2 } from 'lucide-react';
+import { DollarSign, Plus, CheckCircle2, AlertCircle, X, MapPin, Edit, Trash2, AlertTriangle } from 'lucide-react';
 
 export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDeleteExpense, onSaveItinerary }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -8,6 +8,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const [formData, setFormData] = useState({
     item_name: '',
@@ -127,51 +128,51 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
 
   return (
     <div className="space-y-6">
-      
-      {/* CodeCat Clean Stat Cards */}
+
+      {/* Pop & Sunny Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Total Cost Card */}
-        <div className="glass-card p-5 bg-gradient-to-tr from-orange-500/10 to-amber-500/10 border-orange-200 dark:border-orange-800/80">
+        <div className="glass-card p-5 bg-white dark:bg-slate-900 border-2 border-rose-200 dark:border-rose-800/80">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">總支出預估 (TWD)</span>
-            <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-950 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold">
+            <span className="text-xs font-bold text-[#64748B] dark:text-slate-400">總支出預估 (TWD)</span>
+            <div className="w-8 h-8 rounded-full bg-rose-50 dark:bg-rose-950 text-[#FF5A5F] flex items-center justify-center font-bold">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-slate-100 font-outfit mt-2">
+          <div className="text-2xl font-extrabold text-[#FF5A5F] tabular-nums mt-2">
             ${combinedTotal.toLocaleString()}
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">
+          <p className="text-[11px] text-[#64748B] mt-1 tabular-nums">
             含記帳項目 ({expenses.length}筆) + 行程花費 ({itineraries.filter(i => (parseFloat(i.cost_twd) || 0) > 0).length}筆)
           </p>
         </div>
 
         {/* Paid Items Card */}
-        <div className="glass-card p-5 bg-gradient-to-tr from-emerald-500/10 to-teal-500/10 border-emerald-200 dark:border-emerald-800/80">
+        <div className="glass-card p-5 bg-white dark:bg-slate-900 border-2 border-emerald-200 dark:border-emerald-800/80">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">已結清 / 繳清項目</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
+            <span className="text-xs font-bold text-[#64748B] dark:text-slate-400">已結清 / 繳清項目</span>
+            <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
               <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400 font-outfit mt-2">
-            {paidCount} <span className="text-xs font-medium text-slate-400">筆</span>
+          <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums mt-2">
+            {paidCount} <span className="text-xs font-semibold text-[#64748B]">筆</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">已付款完畢無拆帳問題</p>
+          <p className="text-[11px] text-[#64748B] mt-1">已付款完畢無拆帳問題</p>
         </div>
 
         {/* Unpaid Items Card */}
-        <div className="glass-card p-5 bg-gradient-to-tr from-amber-500/10 to-red-500/10 border-amber-200 dark:border-amber-800/80">
+        <div className="glass-card p-5 bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-amber-800/80">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400">待繳款 / 現場支付</span>
-            <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+            <span className="text-xs font-bold text-[#64748B] dark:text-slate-400">待繳款 / 現場支付</span>
+            <div className="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-950 text-[#FFB800] flex items-center justify-center font-bold">
               <AlertCircle className="w-4 h-4" />
             </div>
           </div>
-          <div className="text-2xl font-black text-amber-600 dark:text-amber-400 font-outfit mt-2">
-            {unpaidCount} <span className="text-xs font-medium text-slate-400">筆未付</span>
+          <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400 tabular-nums mt-2">
+            {unpaidCount} <span className="text-xs font-semibold text-[#64748B]">筆未付</span>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">現場需準備現金或刷卡</p>
+          <p className="text-[11px] text-[#64748B] mt-1">現場需準備現金或刷卡</p>
         </div>
       </div>
 
@@ -183,7 +184,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
           placeholder="搜尋記帳品項或行程消費..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full sm:w-64 px-3.5 py-2 text-sm rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-orange-500 focus:outline-none"
+          className="w-full sm:w-64 px-4 py-2 text-sm rounded-full bg-[#FFFDF7] dark:bg-slate-800 border border-amber-200 dark:border-slate-700 focus:ring-2 focus:ring-[#FF5A5F] focus:outline-none"
         />
 
         {/* Paid Status Filter Pills */}
@@ -193,11 +194,10 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
               <button
                 key={status}
                 onClick={() => setFilterPaid(status)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
-                  filterPaid === status
-                    ? 'bg-orange-500 text-white shadow-sm'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                }`}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border ${filterPaid === status
+                    ? 'bg-[#FF5A5F] text-white border-[#FF5A5F] sticker-btn-shadow'
+                    : 'bg-white dark:bg-slate-800 text-[#64748B] dark:text-slate-300 border-amber-200 dark:border-slate-700 hover:border-[#FFB800]'
+                  }`}
               >
                 {status === 'All' ? '全部' : status === 'Paid' ? '已繳清' : '未繳清'}
               </button>
@@ -205,7 +205,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
           </div>
           <button
             onClick={handleOpenAdd}
-            className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
+            className="px-4 py-2 rounded-full bg-[#FF5A5F] hover:bg-[#E8484D] text-white text-xs font-bold sticker-btn-shadow flex items-center gap-1.5 shrink-0 whitespace-nowrap transition-all active:scale-95"
           >
             <Plus className="w-4 h-4" /> 記一筆
           </button>
@@ -235,17 +235,16 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                     )}
                     <span>{exp.item_name}</span>
                   </td>
-                  <td className="p-4 font-extrabold text-orange-600 dark:text-orange-400 font-outfit whitespace-nowrap">
+                  <td className="p-4 font-extrabold text-[#FF5A5F] tabular-nums whitespace-nowrap">
                     ${(parseFloat(exp.amount) || 0).toLocaleString()}
                   </td>
                   <td className="p-4 whitespace-nowrap">
                     <button
                       onClick={() => handleTogglePaid(exp)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                        exp.is_paid
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${exp.is_paid
                           ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
                           : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
-                      }`}
+                        }`}
                     >
                       {exp.is_paid ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
                       {exp.is_paid ? '已繳清' : '未付款'}
@@ -278,7 +277,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                         <Edit className="w-3.5 h-3.5" /> 編輯
                       </button>
                       <button
-                        onClick={() => handleDeleteItem(exp)}
+                        onClick={() => setDeleteTarget(exp)}
                         className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950 text-slate-400 hover:text-red-500 flex items-center gap-1 transition-colors text-xs font-semibold"
                         title="刪除記帳"
                       >
@@ -313,7 +312,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                   )}
                   <span className="truncate">{exp.item_name}</span>
                 </div>
-                <div className="text-lg font-black text-orange-600 dark:text-orange-400 font-outfit shrink-0 whitespace-nowrap">
+                <div className="text-lg font-extrabold text-[#FF5A5F] tabular-nums shrink-0 whitespace-nowrap">
                   ${(parseFloat(exp.amount) || 0).toLocaleString()}
                 </div>
               </div>
@@ -324,7 +323,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                 <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap break-keep">
                   {exp.category || '雜項'}
                 </span>
-                
+
                 {/* Payer */}
                 <span className="text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap break-keep">
                   {exp.payer || '公費'}
@@ -346,11 +345,10 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
                 <button
                   onClick={() => handleTogglePaid(exp)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${
-                    exp.is_paid
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${exp.is_paid
                       ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
                       : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
-                  }`}
+                    }`}
                 >
                   {exp.is_paid ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertCircle className="w-3.5 h-3.5" />}
                   {exp.is_paid ? '已繳清' : '未付款'}
@@ -364,7 +362,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                     <Edit className="w-3.5 h-3.5 text-orange-500" /> 編輯
                   </button>
                   <button
-                    onClick={() => handleDeleteItem(exp)}
+                    onClick={() => setDeleteTarget(exp)}
                     className="px-2.5 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/60 text-slate-400 hover:text-red-500 flex items-center gap-1 text-xs font-semibold transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" /> 刪除
@@ -398,7 +396,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                   type="text"
                   required
                   value={formData.item_name}
-                  onChange={(e) => setFormData({...formData, item_name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, item_name: e.target.value })}
                   placeholder="如: 機票, 飯店訂房, 浮潛費用"
                   className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                 />
@@ -412,7 +410,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                   type="number"
                   required
                   value={formData.amount}
-                  onChange={(e) => setFormData({...formData, amount: parseFloat(e.target.value) || 0})}
+                  onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
                   className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                 />
               </div>
@@ -425,7 +423,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                   <input
                     type="text"
                     value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     placeholder="機票/住宿/交通/美食"
                     className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                   />
@@ -437,7 +435,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                   </label>
                   <select
                     value={formData.is_paid ? 'true' : 'false'}
-                    onChange={(e) => setFormData({...formData, is_paid: e.target.value === 'true'})}
+                    onChange={(e) => setFormData({ ...formData, is_paid: e.target.value === 'true' })}
                     className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
                   >
                     <option value="true">已繳清</option>
@@ -462,6 +460,52 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Delete Confirmation Modal */}
+      {deleteTarget && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setDeleteTarget(null)}
+        >
+          <div
+            className="glass-card w-full max-w-sm p-6 bg-white dark:bg-slate-900 border-2 border-rose-200 dark:border-slate-800 shadow-2xl space-y-4 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-950/60 text-red-500 flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <div className="space-y-1.5">
+              <h3 className="text-lg font-extrabold text-[#1E293B] dark:text-slate-100">
+                {deleteTarget.source === 'itinerary' ? '確定要清除這筆行程預算嗎？' : '確定要刪除這筆記帳嗎？'}
+              </h3>
+              <p className="text-sm font-bold text-[#FF5A5F] line-clamp-2">
+                {deleteTarget.item_name} (NT$ {(parseFloat(deleteTarget.amount) || 0).toLocaleString()})
+              </p>
+              <p className="text-xs text-[#64748B] dark:text-slate-400">
+                {deleteTarget.source === 'itinerary' ? '僅會將該行程卡片的台幣預算歸零，不會刪除行程本身' : '刪除後將無法復原'}
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteTarget(null)}
+                className="flex-1 px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-[#64748B] dark:text-slate-300 font-bold text-xs transition-colors"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleDeleteItem(deleteTarget);
+                  setDeleteTarget(null);
+                }}
+                className="flex-1 px-4 py-2 rounded-full bg-red-500 hover:bg-red-600 text-white font-bold text-xs shadow-md shadow-red-500/20 transition-all"
+              >
+                確定刪除
+              </button>
+            </div>
           </div>
         </div>
       )}
