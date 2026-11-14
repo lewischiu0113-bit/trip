@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import HorizontalScrollStrip from './HorizontalScrollStrip';
 import { 
   Plus, 
   Search, 
@@ -356,8 +357,8 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
 
       {/* Filter Pills Row */}
       <div className="space-y-3">
-        {/* Sticker Date Cards */}
-        <div className="flex items-center gap-2.5 overflow-x-auto py-1.5 px-0.5 no-scrollbar">
+        {/* Sticker Date Cards - Scrollable strip with dynamic left/right cues */}
+        <HorizontalScrollStrip className="gap-2.5 py-1.5 px-0.5">
           <button
             onClick={() => setSelectedDay('All')}
             className={`relative overflow-hidden flex flex-col items-center justify-center min-w-[68px] px-3.5 py-2 rounded-2xl border-2 transition-all shrink-0 ${
@@ -418,36 +419,38 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
               </button>
             );
           })}
-        </div>
+        </HorizontalScrollStrip>
 
-        {/* Category Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-          <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider whitespace-nowrap mr-1">
+        {/* Category Pills - Fixed label (desktop only) + scrollable pills with non-overlapping cues */}
+        <div className="flex items-center gap-2 pb-1">
+          <span className="hidden sm:inline text-xs font-bold text-[#64748B] uppercase tracking-wider whitespace-nowrap shrink-0">
             類別:
           </span>
-          {categories.map((cat) => {
-            const isCatSelected = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`relative overflow-hidden px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap border ${
-                  isCatSelected
-                    ? 'text-white border-[#FF5A5F] sticker-btn-shadow'
-                    : 'bg-white dark:bg-slate-900 text-[#64748B] dark:text-slate-300 border-amber-200/80 dark:border-slate-800 hover:border-[#FFB800]'
-                }`}
-              >
-                {isCatSelected && (
-                  <motion.div
-                    layoutId="category-active-pill"
-                    transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-                    className="absolute inset-0 bg-[#FF5A5F]"
-                  />
-                )}
-                <span className="relative z-10">{cat === '構 景點' ? '⛱ 景點' : cat}</span>
-              </button>
-            );
-          })}
+          <HorizontalScrollStrip className="gap-2">
+            {categories.map((cat) => {
+              const isCatSelected = selectedCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`relative shrink-0 overflow-hidden px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap border ${
+                    isCatSelected
+                      ? 'text-white border-[#FF5A5F] sticker-btn-shadow'
+                      : 'bg-white dark:bg-slate-900 text-[#64748B] dark:text-slate-300 border-amber-200/80 dark:border-slate-800 hover:border-[#FFB800]'
+                  }`}
+                >
+                  {isCatSelected && (
+                    <motion.div
+                      layoutId="category-active-pill"
+                      transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                      className="absolute inset-0 bg-[#FF5A5F]"
+                    />
+                  )}
+                  <span className="relative z-10">{cat === '構 景點' ? '⛱ 景點' : cat}</span>
+                </button>
+              );
+            })}
+          </HorizontalScrollStrip>
         </div>
       </div>
 

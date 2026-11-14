@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Compass, Lock, User, LogIn, AlertCircle, Sparkles } from 'lucide-react';
+import { Lock, User, LogIn, AlertCircle, Sparkles } from 'lucide-react';
 import { verifyUserCredentials } from '../lib/supabase';
+import BrandLogo from './BrandLogo';
 
 export default function LoginView({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
@@ -38,9 +39,7 @@ export default function LoginView({ onLoginSuccess }) {
         
         {/* Header Logo & Title */}
         <div className="text-center space-y-2">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 mx-auto flex items-center justify-center text-white shadow-md shadow-orange-500/25">
-            <Compass className="w-9 h-9 animate-spin-slow" />
-          </div>
+          <BrandLogo className="w-20 h-20 mx-auto drop-shadow-sm" />
 
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 flex items-center justify-center gap-1 mt-3">
             <span className="text-orange-500">旅遊</span>筆記

@@ -31,8 +31,8 @@ export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount,
   ];
 
   return (
-    <div className="flex items-center justify-start sm:justify-center mb-6 overflow-x-auto no-scrollbar py-1">
-      <nav className="inline-flex gap-1.5 sm:gap-2 p-1.5 rounded-full bg-white dark:bg-slate-900 border border-[#FDE68A] dark:border-slate-800 shadow-sm min-w-max">
+    <div className="flex items-center justify-center mb-6 py-1">
+      <nav className="grid grid-cols-2 sm:inline-flex gap-1.5 sm:gap-2 p-1.5 rounded-3xl sm:rounded-full bg-white dark:bg-slate-900 border border-[#FDE68A] dark:border-slate-800 shadow-sm w-full sm:w-auto">
         {tabs.map((t) => {
           const Icon = t.icon;
           const isActive = activeTab === t.id;
@@ -41,7 +41,7 @@ export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount,
             <button
               key={t.id}
               onClick={() => onChangeTab(t.id)}
-              className={`relative flex items-center gap-1.5 sm:gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-colors duration-200 whitespace-nowrap ${
+              className={`relative flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-5 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-colors duration-200 whitespace-nowrap ${
                 isActive
                   ? 'text-white'
                   : 'text-[#64748B] dark:text-slate-400 hover:text-[#1E293B] dark:hover:text-white hover:bg-amber-50/80 dark:hover:bg-slate-800/80'

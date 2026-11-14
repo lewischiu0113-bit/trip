@@ -184,39 +184,47 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
       </div>
 
       {/* Slim Pastel Stat Pills Row */}
-      <div className="flex items-center gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2 sm:gap-2.5 pb-1">
         {/* Pill 1: Total Stops (Coral Pink) */}
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/70 shrink-0 shadow-sm">
-          <MapPin className="w-4 h-4 text-[#FF5A5F]" />
-          <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">總景點</span>
-          <span className="text-sm font-extrabold text-[#FF5A5F] tabular-nums"><AnimatedNumber value={totalStops} /> 個</span>
+        <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/70 shadow-sm">
+          <div className="flex items-center gap-1.5">
+            <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FF5A5F] shrink-0" />
+            <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">總景點</span>
+          </div>
+          <span className="text-xs sm:text-sm font-extrabold text-[#FF5A5F] tabular-nums"><AnimatedNumber value={totalStops} /> 個</span>
         </div>
 
         {/* Pill 2: Days (Sunny Amber) */}
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/70 shrink-0 shadow-sm">
-          <Clock className="w-4 h-4 text-[#FFB800]" />
-          <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">預計天數</span>
-          <span className="text-sm font-extrabold text-amber-600 dark:text-amber-400 tabular-nums"><AnimatedNumber value={uniqueDays} /> 天</span>
+        <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/70 shadow-sm">
+          <div className="flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FFB800] shrink-0" />
+            <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">預計天數</span>
+          </div>
+          <span className="text-xs sm:text-sm font-extrabold text-amber-600 dark:text-amber-400 tabular-nums"><AnimatedNumber value={uniqueDays} /> 天</span>
         </div>
 
         {/* Pill 3: Total Spend (Soda Sky Blue) */}
-        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 shrink-0 shadow-sm">
-          <DollarSign className="w-4 h-4 text-[#00B4D8]" />
-          <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">累計花費</span>
-          <span className="text-sm font-extrabold text-[#00B4D8] tabular-nums">NT$ <AnimatedNumber value={totalTwd} /></span>
+        <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 shadow-sm">
+          <div className="flex items-center gap-1.5">
+            <DollarSign className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00B4D8] shrink-0" />
+            <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">累計花費</span>
+          </div>
+          <span className="text-xs sm:text-sm font-extrabold text-[#00B4D8] tabular-nums">NT$ <AnimatedNumber value={totalTwd} /></span>
         </div>
 
         {/* Pill 4: Packing Progress (Mint Emerald) */}
-        <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/70 shrink-0 shadow-sm">
-          <PackageCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-          <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">行李進度</span>
-          <div className="w-16 bg-emerald-200/70 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+        <div className="flex items-center justify-between sm:justify-start gap-1.5 sm:gap-2.5 px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/70 shadow-sm">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <PackageCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">行李進度</span>
+          </div>
+          <div className="hidden sm:block w-16 bg-emerald-200/70 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
             <div
               className="bg-gradient-to-r from-[#FF5A5F] via-[#FFB800] to-[#10B981] h-full transition-all duration-500 rounded-full"
               style={{ width: `${packingPercent}%` }}
             />
           </div>
-          <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums"><AnimatedNumber value={packingPercent} />%</span>
+          <span className="text-xs sm:text-sm font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums"><AnimatedNumber value={packingPercent} />%</span>
         </div>
       </div>
     </div>

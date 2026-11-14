@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import BrandLogo from './BrandLogo';
 import { 
   Compass, 
   MapPin, 
@@ -74,20 +76,29 @@ export default function Header({
 
   const activeStatus = activeTrip ? getCalculatedStatus(activeTrip.start_date, activeTrip.end_date) : 'Not started';
 
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 260, damping: 30, restDelta: 0.001 });
+
   const formatDropdownDate = (dateStr) => {
     if (!dateStr) return '';
     return dateStr.replace(/-/g, '/');
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-amber-200/60 dark:border-slate-800/80 bg-[#FFFDF7]/90 dark:bg-slate-950/90 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+    <>
+      {/* Top Sunny Reading Progress Line */}
+      <motion.div
+        style={{ scaleX }}
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#FF5A5F] via-[#FFB800] to-[#00B4D8] origin-left z-50 pointer-events-none"
+      />
+
+      <header className="sticky top-2 sm:top-2.5 z-40 w-full px-2.5 sm:px-6 lg:px-8 pointer-events-none">
+        <div className="pointer-events-auto max-w-7xl mx-auto rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-amber-200/80 dark:border-slate-800 shadow-[0_6px_20px_-4px_rgba(255,184,0,0.14),0_2px_8px_-2px_rgba(30,41,59,0.04)] transition-all">
+          <div className="px-3.5 sm:px-5 h-14 sm:h-16 flex items-center justify-between gap-2">
         
         {/* Left: 旅遊筆記 Brand Logo */}
-        <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-[#FF5A5F] to-[#FFB800] rotate-[-4deg] hover:rotate-0 transition-transform flex items-center justify-center text-white sticker-btn-shadow shrink-0">
-            <Compass className="w-5 h-5 sm:w-6 sm:h-6 animate-spin-slow" />
-          </div>
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          <BrandLogo className="w-10 h-10 sm:w-11 sm:h-11 shrink-0 drop-shadow-xs hover:scale-105 transition-transform" />
           <div className="whitespace-nowrap">
             <div className="flex items-center gap-1 font-extrabold text-lg sm:text-xl tracking-tight text-[#1E293B] dark:text-slate-100 whitespace-nowrap">
               <span className="text-[#FF5A5F]">旅遊</span>筆記
@@ -102,7 +113,7 @@ export default function Header({
         <div className="relative min-w-0">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-1.5 sm:gap-2.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white hover:bg-amber-50/70 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-amber-200 dark:border-slate-700/60 transition-all text-xs sm:text-sm font-bold text-[#1E293B] dark:text-slate-100 shadow-sm"
+            className="flex items-center gap-1.5 sm:gap-2.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-amber-50/75 hover:bg-amber-100/80 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-amber-200/90 dark:border-slate-700/60 transition-all text-xs sm:text-sm font-bold text-[#1E293B] dark:text-slate-100 shadow-xs"
           >
             <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FF5A5F] shrink-0" />
             <span className="max-w-[75px] xs:max-w-[110px] sm:max-w-[200px] truncate">
@@ -225,7 +236,7 @@ export default function Header({
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden p-4 space-y-3 bg-[#FFFDF7]/95 dark:bg-slate-950/95 border-b border-amber-200 dark:border-slate-800">
+        <div className="md:hidden px-4 pb-4 pt-3 space-y-3 border-t border-amber-100 dark:border-slate-800">
           <div className="flex items-center justify-between pb-2 border-b border-amber-100 dark:border-slate-800">
             <span className="text-xs font-bold text-[#64748B] dark:text-slate-300 flex items-center gap-1">
               <User className="w-3.5 h-3.5 text-[#FF5A5F]" /> 當前帳號: {currentUser || 'test'}
@@ -252,6 +263,8 @@ export default function Header({
           </button>
         </div>
       )}
-    </header>
+        </div>
+      </header>
+    </>
   );
 }

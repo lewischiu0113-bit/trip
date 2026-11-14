@@ -1,27 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF7A00" />
-      <stop offset="100%" stop-color="#FFAB00" />
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#FF7A00" flood-opacity="0.35" />
-    </filter>
+    <clipPath id="seaB3Clip">
+      <circle cx="250" cy="245" r="185" />
+    </clipPath>
+    <path id="seagull" d="M 0 20 C 12 15, 22 18, 30 24 C 40 10, 52 -2, 66 -12 C 60 4, 50 18, 40 28 C 45 30, 48 32, 46 34 C 37 34, 30 32, 24 28 C 15 24, 8 22, 0 20 Z" />
   </defs>
 
-  <!-- Squircle Background -->
-  <rect x="32" y="32" width="448" height="448" rx="112" fill="url(#brandGrad)" filter="url(#shadow)" />
+  <g clip-path="url(#seaB3Clip)">
+    <!-- Warm Cream Sky -->
+    <circle cx="250" cy="245" r="185" fill="#FEF3C7" />
 
-  <!-- Outer Ring / Compass Ring -->
-  <circle cx="256" cy="256" r="140" fill="none" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" opacity="0.9" />
+    <!-- Sunny Amber Sun -->
+    <circle cx="233" cy="220" r="68" fill="#FFB800" />
 
-  <!-- Compass Star Needle -->
-  <polygon points="256,150 286,256 256,362 226,256" fill="#FFFFFF" opacity="0.95" />
-  <polygon points="150,256 256,226 362,256 256,286" fill="#FFFFFF" opacity="0.75" />
+    <!-- Wave Layer 1 (Coral Red) -->
+    <path d="M 60 272 C 125 240, 195 298, 265 268 C 330 240, 385 282, 445 260 L 445 445 L 60 445 Z" fill="#FF5A5F" />
 
-  <!-- Center Pivot -->
-  <circle cx="256" cy="256" r="28" fill="#FF7A00" stroke="#FFFFFF" stroke-width="12" />
+    <!-- White Foam Divider 1 -->
+    <path d="M 60 314 C 135 344, 210 290, 285 318 C 350 342, 400 300, 445 316 L 445 445 L 60 445 Z" fill="#FFFFFF" />
 
-  <!-- Sparkle Accent -->
-  <path d="M 370 120 Q 370 145 395 145 Q 370 145 370 170 Q 370 145 345 145 Q 370 145 370 120 Z" fill="#FFFFFF" />
+    <!-- Wave Layer 2 (Deep Slate Navy) -->
+    <path d="M 60 328 C 135 358, 210 304, 285 332 C 350 356, 400 314, 445 330 L 445 445 L 60 445 Z" fill="#1E293B" />
+
+    <!-- White Foam Divider 2 -->
+    <path d="M 60 374 C 150 350, 230 398, 315 370 C 375 350, 415 378, 445 368 L 445 445 L 60 445 Z" fill="#FFFFFF" />
+
+    <!-- Wave Layer 3 (Sunny Amber) -->
+    <path d="M 60 386 C 150 362, 230 410, 315 382 C 375 362, 415 390, 445 380 L 445 445 L 60 445 Z" fill="#FFB800" />
+  </g>
+
+  <!-- Three Flying Seagulls -->
+  <use href="#seagull" transform="translate(298, 68) rotate(-2) scale(0.86)" fill="#1E293B" />
+  <use href="#seagull" transform="translate(132, 132) rotate(-4) scale(0.80)" fill="#1E293B" />
+  <use href="#seagull" transform="translate(302, 148) rotate(3) scale(0.68)" fill="#1E293B" />
 </svg>
