@@ -2,6 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, MapPin, DollarSign, PackageCheck, Sparkles, Edit, Clock, Umbrella } from 'lucide-react';
 import { getCalculatedStatus, renderStatusBadge } from './Header';
 import { fetchTripWeather } from '../lib/weather';
+import AnimatedNumber from './AnimatedNumber';
+
+const BANNER_PARTICLES = [
+  { left: '8%', size: 4, duration: 7.5, delay: 0 },
+  { left: '16%', size: 6, duration: 9.2, delay: 1.4 },
+  { left: '24%', size: 3.5, duration: 6.8, delay: 2.8 },
+  { left: '33%', size: 5, duration: 8.4, delay: 0.7 },
+  { left: '42%', size: 4, duration: 7.9, delay: 3.5 },
+  { left: '51%', size: 6, duration: 9.6, delay: 1.1 },
+  { left: '60%', size: 3.5, duration: 7.1, delay: 4.2 },
+  { left: '69%', size: 5, duration: 8.8, delay: 2.1 },
+  { left: '78%', size: 4, duration: 7.4, delay: 0.4 },
+  { left: '87%', size: 5.5, duration: 9.0, delay: 3.0 },
+  { left: '93%', size: 3.5, duration: 6.5, delay: 1.9 },
+];
+
+function extractMonth(dateStr) {
+  if (!dateStr || typeof dateStr !== 'string') return null;
+  const trimmed = dateStr.trim();
+  const ymdMatch = trimmed.match(/^\d{4}[-/](\d{1,2})/);
+  if (ymdMatch) return parseInt(ymdMatch[1], 10);
+  const mdMatch = trimmed.match(/^(\d{1,2})[-/]/);
+  if (mdMatch) return parseInt(mdMatch[1], 10);
+  const parsed = new Date(trimmed);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.getMonth() + 1;
+}
+
+function isWinterTrip(startDate, endDate) {
+  const winterMonths = new Set([12, 1, 2]);
+  const startMonth = extractMonth(startDate);
+  const endMonth = extractMonth(endDate);
+  return (startMonth !== null && winterMonths.has(startMonth)) || (endMonth !== null && winterMonths.has(endMonth));
+}
 
 const DEFAULT_BANNER_IMAGE = 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1600&q=80';
 
@@ -30,6 +63,7 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
 
   const status = getCalculatedStatus(activeTrip.start_date, activeTrip.end_date);
   const bannerImage = activeTrip.cover_image || DEFAULT_BANNER_IMAGE;
+  const showWinterSnow = isWinterTrip(activeTrip.start_date, activeTrip.end_date);
 
   const WeatherIcon = weather?.WeatherIcon;
 
@@ -51,6 +85,25 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
           />
           {/* Warm Sunny + Deep Bottom Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/35 to-amber-500/10" />
+
+          {/* Gentle Winter Snow / Sparkle Particles (auto-enabled for Dec-Feb trips) */}
+          {showWinterSnow && (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden z-[5]" aria-hidden="true">
+              {BANNER_PARTICLES.map((p, idx) => (
+                <span
+                  key={idx}
+                  className="absolute -top-3 rounded-full bg-white/80 shadow-[0_0_6px_rgba(255,255,255,0.85)] animate-snow-fall"
+                  style={{
+                    left: p.left,
+                    width: `${p.size}px`,
+                    height: `${p.size}px`,
+                    animationDuration: `${p.duration}s`,
+                    animationDelay: `${p.delay}s`,
+                  }}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Top Bar inside Banner */}
           <div className="absolute top-3 left-3 right-3 sm:top-5 sm:left-6 sm:right-6 flex items-start justify-between gap-2 z-10">
@@ -136,21 +189,21 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/70 shrink-0 shadow-sm">
           <MapPin className="w-4 h-4 text-[#FF5A5F]" />
           <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">總景點</span>
-          <span className="text-sm font-extrabold text-[#FF5A5F] tabular-nums">{totalStops} 個</span>
+          <span className="text-sm font-extrabold text-[#FF5A5F] tabular-nums"><AnimatedNumber value={totalStops} /> 個</span>
         </div>
 
         {/* Pill 2: Days (Sunny Amber) */}
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/70 shrink-0 shadow-sm">
           <Clock className="w-4 h-4 text-[#FFB800]" />
           <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">預計天數</span>
-          <span className="text-sm font-extrabold text-amber-600 dark:text-amber-400 tabular-nums">{uniqueDays} 天</span>
+          <span className="text-sm font-extrabold text-amber-600 dark:text-amber-400 tabular-nums"><AnimatedNumber value={uniqueDays} /> 天</span>
         </div>
 
         {/* Pill 3: Total Spend (Soda Sky Blue) */}
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 shrink-0 shadow-sm">
           <DollarSign className="w-4 h-4 text-[#00B4D8]" />
           <span className="text-xs font-semibold text-[#64748B] dark:text-slate-300">累計花費</span>
-          <span className="text-sm font-extrabold text-[#00B4D8] tabular-nums">NT$ {totalTwd.toLocaleString()}</span>
+          <span className="text-sm font-extrabold text-[#00B4D8] tabular-nums">NT$ <AnimatedNumber value={totalTwd} /></span>
         </div>
 
         {/* Pill 4: Packing Progress (Mint Emerald) */}
@@ -163,7 +216,7 @@ export default function TripBanner({ activeTrip, itineraries, expenses, packing,
               style={{ width: `${packingPercent}%` }}
             />
           </div>
-          <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums">{packingPercent}%</span>
+          <span className="text-sm font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums"><AnimatedNumber value={packingPercent} />%</span>
         </div>
       </div>
     </div>

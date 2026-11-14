@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calendar, Receipt, PackageCheck, Map } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount, expenseCount, packingCount, placeCount }) {
   const tabs = [
@@ -40,16 +41,23 @@ export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount,
             <button
               key={t.id}
               onClick={() => onChangeTab(t.id)}
-              className={`flex items-center gap-1.5 sm:gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-all duration-200 whitespace-nowrap ${
+              className={`relative flex items-center gap-1.5 sm:gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-colors duration-200 whitespace-nowrap ${
                 isActive
-                  ? 'bg-[#FF5A5F] text-white sticker-btn-shadow'
+                  ? 'text-white'
                   : 'text-[#64748B] dark:text-slate-400 hover:text-[#1E293B] dark:hover:text-white hover:bg-amber-50/80 dark:hover:bg-slate-800/80'
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isActive ? 'text-white' : 'text-[#FFB800]'}`} />
-              <span>{t.label}</span>
+              {isActive && (
+                <motion.div
+                  layoutId="nav-active-pill"
+                  transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                  className="absolute inset-0 rounded-full bg-[#FF5A5F] sticker-btn-shadow"
+                />
+              )}
+              <Icon className={`relative z-10 w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors ${isActive ? 'text-white' : 'text-[#FFB800]'}`} />
+              <span className="relative z-10">{t.label}</span>
               {t.count !== undefined && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold tabular-nums ${
+                <span className={`relative z-10 px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold tabular-nums transition-colors ${
                   isActive 
                     ? 'bg-white/25 text-white' 
                     : 'bg-amber-50 dark:bg-slate-800 text-[#64748B] dark:text-slate-300'

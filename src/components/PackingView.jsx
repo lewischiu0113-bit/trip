@@ -1,5 +1,19 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { PackageCheck, CheckSquare, Square, Plus, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import AnimatedNumber from './AnimatedNumber';
+
+const CONFETTI_COLORS = ['#FF5A5F', '#FFB800', '#00B4D8', '#10B981', '#A855F7', '#F43F5E'];
+const CONFETTI_PIECES = Array.from({ length: 28 }, (_, i) => ({
+  id: i,
+  left: `${((i * 37) % 94) + 3}%`,
+  color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+  delay: (i % 7) * 0.06,
+  duration: 1.6 + (i % 5) * 0.22,
+  rotate: ((i % 2 === 0 ? 1 : -1) * (180 + (i * 45) % 360)),
+  xDrift: ((i % 2 === 0 ? 1 : -1) * (20 + (i * 13) % 60)),
+  size: 7 + (i % 4) * 2,
+}));
 
 export default function PackingView({ packing, onSavePackingItem }) {
   const [newItemText, setNewItemText] = useState('');
@@ -13,6 +27,19 @@ export default function PackingView({ packing, onSavePackingItem }) {
   const total = packing.length;
   const packedCount = packing.filter(p => p.is_packed).length;
   const progressPercent = total > 0 ? Math.round((packedCount / total) * 100) : 0;
+
+  const [showConfetti, setShowConfetti] = useState(false);
+  const prevPercentRef = useRef(progressPercent);
+
+  useEffect(() => {
+    if (progressPercent === 100 && prevPercentRef.current < 100 && total > 0) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 2600);
+      prevPercentRef.current = progressPercent;
+      return () => clearTimeout(timer);
+    }
+    prevPercentRef.current = progressPercent;
+  }, [progressPercent, total]);
 
   const handleTogglePack = (item) => {
     onSavePackingItem({
@@ -39,6 +66,41 @@ export default function PackingView({ packing, onSavePackingItem }) {
 
   return (
     <div className="space-y-6">
+      {/* 100% Packed Confetti Celebration */}
+      <AnimatePresence>
+        {showConfetti && (
+          <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden" aria-hidden="true">
+            {CONFETTI_PIECES.map((piece) => (
+              <motion.span
+                key={piece.id}
+                initial={{ y: -24, x: 0, opacity: 1, rotate: 0, scale: 1 }}
+                animate={{
+                  y: '105vh',
+                  x: piece.xDrift,
+                  opacity: [1, 1, 0],
+                  rotate: piece.rotate,
+                  scale: [1, 1.1, 0.85],
+                }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: piece.duration,
+                  delay: piece.delay,
+                  ease: [0.2, 0.8, 0.4, 1],
+                }}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: piece.left,
+                  width: `${piece.size}px`,
+                  height: `${piece.size * 0.6}px`,
+                  backgroundColor: piece.color,
+                  borderRadius: '2px',
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </AnimatePresence>
       
       {/* Top Header Card */}
       <div className="glass-card p-6 bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-800">
@@ -60,7 +122,7 @@ export default function PackingView({ packing, onSavePackingItem }) {
           <div className="w-full md:w-64 space-y-1.5">
             <div className="flex justify-between text-xs font-bold text-[#1E293B] dark:text-slate-200">
               <span>準備完成度</span>
-              <span className="text-[#FF5A5F] font-extrabold tabular-nums">{progressPercent}% ({packedCount}/{total})</span>
+              <span className="text-[#FF5A5F] font-extrabold tabular-nums"><AnimatedNumber value={progressPercent} />% ({packedCount}/{total})</span>
             </div>
             <div className="w-full bg-amber-100/80 dark:bg-slate-700 h-3.5 rounded-full overflow-hidden p-0.5">
               <div

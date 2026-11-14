@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 import { Maximize2, X, ExternalLink, Clock } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const WASHI_TAPE_STYLES = [
+  'bg-rose-300/75 dark:bg-rose-500/45 -rotate-2',
+  'bg-amber-300/75 dark:bg-amber-500/45 rotate-2',
+  'bg-sky-300/75 dark:bg-sky-500/45 -rotate-1',
+  'bg-emerald-300/75 dark:bg-emerald-500/45 rotate-1',
+];
 
 const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80';
 
@@ -44,18 +52,27 @@ const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1488646953014-
       <div className="space-y-6">
 
             {/* Polaroid Grid of Places */ }
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pt-4">
               {filteredPlaceItems.map((place, idx) => {
                 const imgUrl = place.image_url || DEFAULT_FALLBACK_IMAGE;
                 const { cleanText } = parseDescriptionAndLinks(place.description);
                 const tiltClass = idx % 2 === 0 ? 'hover:-rotate-[1.5deg]' : 'hover:rotate-[1.5deg]';
+                const tapeStyle = WASHI_TAPE_STYLES[idx % WASHI_TAPE_STYLES.length];
 
                 return (
-                  <div
+                  <motion.div
                     key={place.id}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: Math.min(idx * 0.04, 0.36), ease: 'easeOut' }}
                     onClick={() => setSelectedPlace(place)}
-                    className={`bg-white dark:bg-slate-900 p-3 pb-4 rounded-2xl border-2 border-[#FDE68A] dark:border-slate-800 shadow-md hover:shadow-xl group cursor-pointer transition-all duration-300 hover:-translate-y-1.5 ${tiltClass} flex flex-col justify-between`}
+                    className={`relative bg-white dark:bg-slate-900 p-3 pb-4 rounded-2xl border-2 border-[#FDE68A] dark:border-slate-800 shadow-md hover:shadow-xl group cursor-pointer transition-all duration-300 hover:-translate-y-1.5 ${tiltClass} flex flex-col justify-between`}
                   >
+                    {/* Washi Tape Sticker Decoration */}
+                    <div
+                      className={`absolute -top-2.5 left-1/2 -translate-x-1/2 w-16 h-5 rounded-xs backdrop-blur-[1px] shadow-xs border border-white/40 dark:border-white/10 pointer-events-none z-10 ${tapeStyle}`}
+                      aria-hidden="true"
+                    />
                     <div>
                         {/* Polaroid Photo Frame */}
                         <div className="relative h-48 rounded-xl bg-amber-50 dark:bg-slate-800 overflow-hidden border border-amber-100 dark:border-slate-700">
@@ -98,7 +115,7 @@ const DEFAULT_FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1488646953014-
                                   <Maximize2 className="w-3 h-3" />
                                 </span>
                               </div>
-                            </div>
+                            </motion.div>
                             );
         })}
                         </div>

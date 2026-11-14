@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { DollarSign, Plus, CheckCircle2, AlertCircle, X, MapPin, Edit, Trash2, AlertTriangle } from 'lucide-react';
+import AnimatedNumber from './AnimatedNumber';
 
 export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDeleteExpense, onSaveItinerary }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -140,7 +141,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
             </div>
           </div>
           <div className="text-2xl font-extrabold text-[#FF5A5F] tabular-nums mt-2">
-            ${combinedTotal.toLocaleString()}
+            $<AnimatedNumber value={combinedTotal} />
           </div>
           <p className="text-[11px] text-[#64748B] mt-1 tabular-nums">
             含記帳項目 ({expenses.length}筆) + 行程花費 ({itineraries.filter(i => (parseFloat(i.cost_twd) || 0) > 0).length}筆)
@@ -156,7 +157,7 @@ export default function ExpenseView({ expenses, itineraries, onSaveExpense, onDe
             </div>
           </div>
           <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tabular-nums mt-2">
-            {paidCount} <span className="text-xs font-semibold text-[#64748B]">筆</span>
+            <AnimatedNumber value={paidCount} /> <span className="text-xs font-semibold text-[#64748B]">筆</span>
           </div>
           <p className="text-[11px] text-[#64748B] mt-1">已付款完畢無拆帳問題</p>
         </div>

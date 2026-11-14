@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { 
   Plus, 
   Search, 
@@ -359,17 +360,24 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
         <div className="flex items-center gap-2.5 overflow-x-auto py-1.5 px-0.5 no-scrollbar">
           <button
             onClick={() => setSelectedDay('All')}
-            className={`flex flex-col items-center justify-center min-w-[68px] px-3.5 py-2 rounded-2xl border-2 transition-all shrink-0 ${
+            className={`relative overflow-hidden flex flex-col items-center justify-center min-w-[68px] px-3.5 py-2 rounded-2xl border-2 transition-all shrink-0 ${
               selectedDay === 'All'
-                ? 'bg-[#FF5A5F] border-[#FF5A5F] text-white scale-105 sticker-btn-shadow'
+                ? 'border-[#FF5A5F] text-white scale-105 sticker-btn-shadow'
                 : 'bg-white dark:bg-slate-900 border-amber-200 dark:border-slate-800 text-[#1E293B] dark:text-slate-200 hover:border-[#FFB800]'
             }`}
           >
-            <span className={`text-[10px] font-bold uppercase ${selectedDay === 'All' ? 'text-white/90' : 'text-[#64748B]'}`}>
+            {selectedDay === 'All' && (
+              <motion.div
+                layoutId="day-sticker-pill"
+                transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                className="absolute inset-0 bg-[#FF5A5F]"
+              />
+            )}
+            <span className={`relative z-10 text-[10px] font-bold uppercase ${selectedDay === 'All' ? 'text-white/90' : 'text-[#64748B]'}`}>
               ALL
             </span>
-            <span className="text-sm font-extrabold">全部</span>
-            <span className={`text-[10px] font-bold tabular-nums mt-0.5 px-1.5 rounded-full ${
+            <span className="relative z-10 text-sm font-extrabold">全部</span>
+            <span className={`relative z-10 text-[10px] font-bold tabular-nums mt-0.5 px-1.5 rounded-full ${
               selectedDay === 'All' ? 'bg-white/25 text-white' : 'bg-amber-50 dark:bg-slate-800 text-[#FFB800]'
             }`}>
               {itineraries.length}站
@@ -385,17 +393,24 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
               <button
                 key={day}
                 onClick={() => setSelectedDay(day)}
-                className={`flex flex-col items-center justify-center min-w-[72px] px-3.5 py-2 rounded-2xl border-2 transition-all shrink-0 ${
+                className={`relative overflow-hidden flex flex-col items-center justify-center min-w-[72px] px-3.5 py-2 rounded-2xl border-2 transition-all shrink-0 ${
                   isSelected
-                    ? 'bg-[#FF5A5F] border-[#FF5A5F] text-white scale-105 sticker-btn-shadow'
+                    ? 'border-[#FF5A5F] text-white scale-105 sticker-btn-shadow'
                     : 'bg-white dark:bg-slate-900 border-amber-200 dark:border-slate-800 text-[#1E293B] dark:text-slate-200 hover:border-[#FFB800]'
                 }`}
               >
-                <span className={`text-[10px] font-bold ${isSelected ? 'text-white/90' : 'text-[#64748B] dark:text-slate-400'}`}>
+                {isSelected && (
+                  <motion.div
+                    layoutId="day-sticker-pill"
+                    transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+                    className="absolute inset-0 bg-[#FF5A5F]"
+                  />
+                )}
+                <span className={`relative z-10 text-[10px] font-bold ${isSelected ? 'text-white/90' : 'text-[#64748B] dark:text-slate-400'}`}>
                   {weekdayText}
                 </span>
-                <span className="text-sm font-extrabold tabular-nums">{dateText}</span>
-                <span className={`text-[10px] font-bold tabular-nums mt-0.5 px-1.5 rounded-full ${
+                <span className="relative z-10 text-sm font-extrabold tabular-nums">{dateText}</span>
+                <span className={`relative z-10 text-[10px] font-bold tabular-nums mt-0.5 px-1.5 rounded-full ${
                   isSelected ? 'bg-white/25 text-white' : 'bg-amber-50 dark:bg-slate-800 text-[#FFB800]'
                 }`}>
                   {count}站
@@ -410,19 +425,29 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
           <span className="text-xs font-bold text-[#64748B] uppercase tracking-wider whitespace-nowrap mr-1">
             類別:
           </span>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap border ${
-                selectedCategory === cat
-                  ? 'bg-[#FF5A5F] text-white border-[#FF5A5F] sticker-btn-shadow'
-                  : 'bg-white dark:bg-slate-900 text-[#64748B] dark:text-slate-300 border-amber-200/80 dark:border-slate-800 hover:border-[#FFB800]'
-              }`}
-            >
-              {cat === '構 景點' ? '⛱ 景點' : cat}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isCatSelected = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`relative overflow-hidden px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap border ${
+                  isCatSelected
+                    ? 'text-white border-[#FF5A5F] sticker-btn-shadow'
+                    : 'bg-white dark:bg-slate-900 text-[#64748B] dark:text-slate-300 border-amber-200/80 dark:border-slate-800 hover:border-[#FFB800]'
+                }`}
+              >
+                {isCatSelected && (
+                  <motion.div
+                    layoutId="category-active-pill"
+                    transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                    className="absolute inset-0 bg-[#FF5A5F]"
+                  />
+                )}
+                <span className="relative z-10">{cat === '構 景點' ? '⛱ 景點' : cat}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -441,7 +466,7 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
       ) : viewMode === 'timeline' ? (
         
         /* Timeline View with Mobile Touch Drag and One-Tap Reordering */
-        <div className="relative border-l-2 border-dashed border-amber-300 dark:border-amber-700/60 ml-4 sm:ml-6 space-y-5 pt-2 pb-6">
+        <div className="timeline-dashed-line ml-4 sm:ml-6 space-y-5 pt-2 pb-6">
           {filteredItineraries.map((item, idx) => {
             const hasImage = Boolean(item.image_url && item.image_url.trim());
             const isFailed = failedImageIds.has(item.id);
@@ -468,12 +493,18 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
               >
                 
                 {/* Timeline Dot */}
-                <div className="absolute -left-[17px] top-5 w-8 h-8 rounded-full bg-white dark:bg-slate-900 border-2 border-[#FFB800] shadow-md flex items-center justify-center text-[#FF5A5F] group-hover:scale-110 group-hover:bg-[#FFB800] group-hover:text-white transition-all cursor-grab active:cursor-grabbing tabular-nums">
+                <div className="absolute -left-[17px] top-5 w-8 h-8 rounded-full bg-white dark:bg-slate-900 border-2 border-[#FFB800] shadow-md flex items-center justify-center text-[#FF5A5F] group-hover:scale-110 group-hover:bg-[#FFB800] group-hover:text-white transition-all cursor-grab active:cursor-grabbing tabular-nums z-10">
                   <span className="text-[11px] font-extrabold">{idx + 1}</span>
                 </div>
 
-                {/* Card Container */}
-                <div className="glass-card p-4 sm:p-5 hover:-translate-y-1 transition-all duration-300 relative">
+                {/* Card Container with Staggered Entrance */}
+                <motion.div
+                  key={`${selectedDay}-${selectedCategory}-${item.id}`}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.28, delay: Math.min(idx * 0.04, 0.32), ease: 'easeOut' }}
+                  className="glass-card p-4 sm:p-5 hover:-translate-y-1 transition-all duration-300 relative"
+                >
                   
                   {/* Drag Handle Icon */}
                   <div 
@@ -562,9 +593,16 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-50 hover:bg-[#00B4D8] text-[#00B4D8] hover:text-white border border-sky-200 dark:bg-sky-950/60 dark:border-sky-800 dark:text-sky-300 transition-all shadow-xs"
+                              className="group/map inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-sky-50 hover:bg-[#00B4D8] text-[#00B4D8] hover:text-white border border-sky-200 dark:bg-sky-950/60 dark:border-sky-800 dark:text-sky-300 transition-all shadow-xs"
                             >
-                              <span>{linkObj.isMap ? '📍 Google 地圖導航' : '🔗 開啟相關連結'}</span>
+                              {linkObj.isMap ? (
+                                <>
+                                  <MapPin className="w-3.5 h-3.5 text-[#FF5A5F] group-hover/map:text-white group-hover/map:-translate-y-0.5 transition-transform" />
+                                  <span>Google 地圖導航</span>
+                                </>
+                              ) : (
+                                <span>🔗 開啟相關連結</span>
+                              )}
                               <ExternalLink className="w-3 h-3" />
                             </a>
                           ))}
@@ -624,7 +662,7 @@ export default function ItineraryView({ itineraries, onSaveItinerary, onDeleteIt
 
                   </div>
 
-                </div>
+                </motion.div>
               </div>
             );
           })}

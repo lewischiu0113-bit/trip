@@ -83,6 +83,75 @@
   animation: spinSlow 14s linear infinite;
 }
 
+/* Gentle winter snow/sparkle drift inside Hero Banner */
+@keyframes snowFall {
+  0% {
+    transform: translateY(-12px) translateX(0px) scale(0.85);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.75;
+  }
+  50% {
+    transform: translateY(130px) translateX(10px) scale(1);
+    opacity: 0.6;
+  }
+  85% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateY(280px) translateX(-8px) scale(0.8);
+    opacity: 0;
+  }
+}
+
+.animate-snow-fall {
+  animation: snowFall linear infinite;
+}
+
+/* Flowing dashed vertical timeline line */
+@keyframes dashFlow {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 24px;
+  }
+}
+
+.timeline-dashed-line {
+  position: relative;
+}
+
+.timeline-dashed-line::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #FCD34D 0px,
+    #FCD34D 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  background-size: 2px 24px;
+  animation: dashFlow 2.2s linear infinite;
+  pointer-events: none;
+}
+
+.dark .timeline-dashed-line::before {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(180, 83, 9, 0.65) 0px,
+    rgba(180, 83, 9, 0.65) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
+
 /* Hide scrollbar helpers */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
