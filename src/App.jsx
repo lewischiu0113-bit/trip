@@ -8,6 +8,7 @@ import ItineraryView from './components/ItineraryView';
 import ExpenseView from './components/ExpenseView';
 import PackingView from './components/PackingView';
 import PlaceNotesView from './components/PlaceNotesView';
+import MustBuyView from './components/MustBuyView';
 import TripModal from './components/TripModal';
 import LoginView from './components/LoginView';
 
@@ -16,12 +17,15 @@ import {
   fetchItineraries, 
   fetchExpenses, 
   fetchPacking,
+  fetchMustBuyItems,
   saveTrip,
   saveItinerary,
   deleteItinerary,
   saveExpense,
   deleteExpense,
-  savePackingItem
+  savePackingItem,
+  saveMustBuyItem,
+  deleteMustBuyItem
 } from './lib/supabase';
 
 import { Loader2 } from 'lucide-react';
@@ -37,6 +41,7 @@ export default function App() {
   const [itineraries, setItineraries] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [packing, setPacking] = useState([]);
+  const [mustBuyItems, setMustBuyItems] = useState([]);
   
   const [activeTab, setActiveTab] = useState('itinerary');
   const [darkMode, setDarkMode] = useState(false);
@@ -84,6 +89,9 @@ export default function App() {
 
       const packRes = await fetchPacking(activeTrip.id);
       setPacking(packRes.data);
+
+      const mustBuyRes = await fetchMustBuyItems(activeTrip.id);
+      setMustBuyItems(mustBuyRes.data);
     }
 
     loadTripDetails();
@@ -155,6 +163,19 @@ export default function App() {
     setPacking(updated);
   };
 
+  const handleSaveMustBuyItem = async (item) => {
+    await saveMustBuyItem(item);
+    const updated = mustBuyItems.some(m => m.id === item.id)
+      ? mustBuyItems.map(m => m.id === item.id ? item : m)
+      : [...mustBuyItems, item];
+    setMustBuyItems(updated);
+  };
+
+  const handleDeleteMustBuyItem = async (id) => {
+    await deleteMustBuyItem(id);
+    setMustBuyItems(mustBuyItems.filter(m => m.id !== id));
+  };
+
   // If user is not logged in, render Login View
   if (!currentUser) {
     return <LoginView onLoginSuccess={handleLoginSuccess} />;
@@ -209,9 +230,10 @@ export default function App() {
                 activeTab={activeTab}
                 onChangeTab={setActiveTab}
                 itineraryCount={itineraries.length}
-                expenseCount={expenses.length}
+                expenseCount={expenses.length + itineraries.filter(i => (parseFloat(i.cost_twd) || 0) > 0).length}
                 packingCount={packing.length}
                 placeCount={itineraries.filter(i => i.image_url || i.description).length}
+                mustBuyCount={mustBuyItems.length}
               />
 
               {/* Animated Tab Views */}
@@ -253,6 +275,15 @@ export default function App() {
                     {activeTab === 'places' && (
                       <PlaceNotesView
                         itineraries={itineraries}
+                      />
+                    )}
+
+                    {activeTab === 'mustbuy' && (
+                      <MustBuyView
+                        items={mustBuyItems}
+                        tripId={activeTrip?.id}
+                        onSaveItem={handleSaveMustBuyItem}
+                        onDeleteItem={handleDeleteMustBuyItem}
                       />
                     )}
                   </motion.div>

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Calendar, Receipt, PackageCheck, Map } from 'lucide-react';
+import { Calendar, Receipt, PackageCheck, Map, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount, expenseCount, packingCount, placeCount }) {
+export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount, expenseCount, packingCount, placeCount, mustBuyCount }) {
   const tabs = [
     {
       id: 'itinerary',
@@ -27,6 +27,12 @@ export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount,
       label: '景點圖輯筆記',
       icon: Map,
       count: placeCount,
+    },
+    {
+      id: 'mustbuy',
+      label: '必買清單',
+      icon: ShoppingBag,
+      count: mustBuyCount,
     }
   ];
 
@@ -37,11 +43,15 @@ export default function NavigationTabs({ activeTab, onChangeTab, itineraryCount,
           const Icon = t.icon;
           const isActive = activeTab === t.id;
 
+          const isLastOdd = tabs.length % 2 === 1 && t.id === tabs[tabs.length - 1].id;
+
           return (
             <button
               key={t.id}
               onClick={() => onChangeTab(t.id)}
               className={`relative flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-5 sm:py-2.5 rounded-full font-bold text-xs sm:text-sm transition-colors duration-200 whitespace-nowrap ${
+                isLastOdd ? 'col-span-2 sm:col-span-1' : ''
+              } ${
                 isActive
                   ? 'text-white'
                   : 'text-[#64748B] dark:text-slate-400 hover:text-[#1E293B] dark:hover:text-white hover:bg-amber-50/80 dark:hover:bg-slate-800/80'

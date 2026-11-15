@@ -58,12 +58,26 @@ CREATE TABLE IF NOT EXISTS public.tb_packing (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS public.tb_must_buy (
+    id TEXT PRIMARY KEY,
+    trip_id TEXT REFERENCES public.tb_trips(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    category TEXT DEFAULT '美妝保養',
+    price_note TEXT,
+    description TEXT,
+    image_url TEXT,
+    source_url TEXT,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
 -- Enable RLS and public policies
 ALTER TABLE public.tb_users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tb_trips ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tb_itineraries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tb_expenses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.tb_packing ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tb_must_buy ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow public read/all tb_users" ON public.tb_users FOR ALL USING (true);
 CREATE POLICY "Allow public read tb_trips" ON public.tb_trips FOR SELECT USING (true);
@@ -77,3 +91,6 @@ CREATE POLICY "Allow public insert/update/delete tb_expenses" ON public.tb_expen
 
 CREATE POLICY "Allow public read tb_packing" ON public.tb_packing FOR SELECT USING (true);
 CREATE POLICY "Allow public insert/update/delete tb_packing" ON public.tb_packing FOR ALL USING (true);
+
+CREATE POLICY "Allow public read tb_must_buy" ON public.tb_must_buy FOR SELECT USING (true);
+CREATE POLICY "Allow public insert/update/delete tb_must_buy" ON public.tb_must_buy FOR ALL USING (true);

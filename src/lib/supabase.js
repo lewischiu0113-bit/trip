@@ -13,6 +13,7 @@ export const TB_TRIPS = 'tb_trips';
 export const TB_ITINERARIES = 'tb_itineraries';
 export const TB_EXPENSES = 'tb_expenses';
 export const TB_PACKING = 'tb_packing';
+export const TB_MUST_BUY = 'tb_must_buy';
 export const TB_USERS = 'tb_users';
 
 // User Authentication verification from Supabase `tb_users`
@@ -171,4 +172,47 @@ export async function savePackingItem(item) {
     console.error('Failed saving packing item to Supabase:', e);
   }
   return { data: [item], isSupabase: false };
+}
+
+// 5. Must-Buy List (`tb_must_buy`)
+export async function fetchMustBuyItems(tripId) {
+  try {
+    let query = supabase
+      .from(TB_MUST_BUY)
+      .select('*')
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: true });
+    if (tripId) {
+      query = query.eq('trip_id', tripId);
+    }
+    const { data, error } = await query;
+    if (!error && data) {
+      return { data, isSupabase: true };
+    }
+    if (error) {
+      console.error('Supabase tb_must_buy error:', error.message);
+    }
+  } catch (err) {
+    console.error('Supabase fetch must_buy error:', err);
+  }
+  return { data: [], isSupabase: false };
+}
+
+export async function saveMustBuyItem(item) {
+  try {
+    const { data, error } = await supabase.from(TB_MUST_BUY).upsert(item).select();
+    if (!error) return { data, isSupabase: true };
+    console.error('Save must_buy Supabase error:', error.message);
+  } catch (e) {
+    console.error('Failed saving must_buy to Supabase:', e);
+  }
+  return { data: [item], isSupabase: false };
+}
+
+export async function deleteMustBuyItem(id) {
+  try {
+    await supabase.from(TB_MUST_BUY).delete().eq('id', id);
+  } catch (e) {
+    console.error('Delete must_buy error:', e);
+  }
 }
